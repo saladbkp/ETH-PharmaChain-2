@@ -1,0 +1,231 @@
+/**
+ * Responsive Fixes for PharmaChain Dashboard
+ * Prevents horizontal scrolling and ensures proper layout
+ */
+
+/* Main container fixes */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+#root {
+  overflow-x: hidden;
+}
+
+/* Dashboard layout fixes */
+.dashboard-layout {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+.dashboard-main {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
+.dashboard-content {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Sidebar fixes */
+.sidebar {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Form fixes */
+form {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Table container fixes */
+.data-table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  width: 100%;
+  min-width: 100%;
+  table-layout: auto;
+}
+
+/* Card fixes */
+.card {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.card-header,
+.card-body {
+  overflow-x: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Grid fixes */
+.grid,
+.grid-2,
+.grid-3 {
+  display: grid;
+  gap: 20px;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* Button fixes */
+.btn {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Status badge fixes */
+.status-badge {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Mobile specific fixes */
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 15px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  /* Hide non-essential table columns on mobile */
+  .data-table th.hide-mobile,
+  .data-table td.hide-mobile {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-content {
+    padding: 10px;
+  }
+
+  .card {
+    padding: 10px;
+  }
+
+  /* Show only critical columns */
+  .data-table {
+    font-size: 12px;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 6px 8px;
+    word-wrap: break-word;
+    min-width: 80px;
+  }
+
+  /* Stack table data on very small screens */
+  .data-table,
+  .data-table thead,
+  .data-table tbody,
+  .data-table th,
+  .data-table td,
+  .data-table tr {
+    display: block;
+  }
+
+  .data-table thead tr {
+    position: absolute;
+    left: -9999px;
+  }
+
+  .data-table tr {
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
+
+  .data-table td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 50%;
+    text-align: left;
+  }
+
+  .data-table td:before {
+    position: absolute;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: bold;
+  }
+
+  .data-table td:nth-of-type(1):before { content: "Field:"; }
+  .data-table td:nth-of-type(2):before { content: "Data:"; }
+}
+
+/* Prevent horizontal scroll in all scrollable containers */
+* {
+  box-sizing: border-box;
+}
+
+/* Max width constraints */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+video {
+  max-width: 100%;
+}
+
+/* Text selection color */
+::selection {
+  background: #3498db;
+  color: white;
+}
+
+::-moz-selection {
+  background: #3498db;
+  color: white;
+}
+
+/* Focus styles for accessibility */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}

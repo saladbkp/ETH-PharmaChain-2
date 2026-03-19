@@ -1,0 +1,3 @@
+@echo off
+echo Starting backend...
+start cmd /k "cd /d C:\Users\USER\Desktop\ETH-PharmaChain-2-main\backend && npm start"

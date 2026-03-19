@@ -1,0 +1,20 @@
+{
+  "name": "pharmachain-auto-tests",
+  "version": "1.0.0",
+  "description": "Automated Testing Scripts - PharmaChain System",
+  "main": "test-complete-workflow.js",
+  "scripts": {
+    "test": "node test-complete-workflow.js",
+    "test:en": "node test-workflow-english.js",
+    "test:simple": "node simple-test.js",
+    "test:100": "node test-100-percent.js",
+    "install-deps": "npm install"
+  },
+  "keywords": ["automation", "testing", "pharmachain", "blockchain"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "form-data": "^4.0.0",
+    "node-fetch": "^3.3.2"
+  }
+}

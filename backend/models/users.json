@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "password": "$2b$10$TT.xS16tu0oeB0Sx/TFKmOrxxGnn9G/ck8vJHDcOwum.sDaaWiKOm",
+    "role": "admin"
+  },
+  {
+    "id": 2,
+    "username": "manufacturer",
+    "password": "$2b$10$fo9sZeS8sGTtngTUv05mbes9HUQ85gnJfHxVn.vndMBOE83XdGTVe",
+    "role": "manufacturer"
+  },
+  {
+    "id": 3,
+    "username": "retailer",
+    "password": "$2b$10$GicdrxkS9FSjEL.c8RxFg.j0pM7jGYyI9rqAKJ091wKzX7SeYwpzq",
+    "role": "retailer"
+  },
+  {
+    "id": 4,
+    "username": "retailer_1773854875833",
+    "password": "$2b$10$ns.BeO65L.ZyF633zzR9neA1G5evHKknceRKQ6WD9lp9VwZsLPA3e",
+    "role": "retailer"
+  },
+  {
+    "id": 5,
+    "username": "retailer_1773854882773",
+    "password": "$2b$10$ExapEU6UXf595siKbwvnRuS/7My0ydWsvlYfqVApdq/vYybkGK7p6",
+    "role": "retailer"
+  },
+  {
+    "id": 6,
+    "username": "retailer_one",
+    "password": "$2b$10$5d/iFQgDSLPRm/lh2eWKpelU6P.IhgTgNq4bnSEgiAZfkTxBP22P.",
+    "role": "retailer"
+  },
+  {
+    "id": 7,
+    "username": "retailer_two",
+    "password": "$2b$10$jMxBIgN7jUUXGP8rirTZyuY.JSK6rdYGCpJKRUMtrCqxlpryffLui",
+    "role": "retailer"
+  },
+  {
+    "id": 8,
+    "username": "pharmacy_abc",
+    "password": "$2b$10$WhAV283Nsr9R4bCJyOo5CuLhM7fQr12Ub9IX7i8jOC3e.joSh1jqq",
+    "role": "retailer"
+  }
+]

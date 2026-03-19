@@ -1,0 +1,5 @@
+现在的问题是 transfer 需要admin approve 吗
+要的话 retailer 需要改 manu 需要加pending 在 transaction 
+不需要的话 admin remove transfer pendiing
+
+manu transfer no need admin approve, admin page remove transfer pendiing
