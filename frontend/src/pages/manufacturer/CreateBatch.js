@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useWeb3 } from '../../contexts/Web3Context';
 import '../../styles/Dashboard.css';
 
 // Helper function to format MAL number
@@ -14,6 +15,8 @@ const formatMALNumber = (malNumber) => {
 };
 
 export default function CreateBatch() {
+  const { isConnected, signMessage, verifyWalletForRole } = useWeb3();
+
   const [medicines, setMedicines] = useState([]);
   const [formData, setFormData] = useState({
     medicineId: '',
@@ -109,10 +112,53 @@ export default function CreateBatch() {
       return;
     }
 
+    // Step 1: Check wallet connection
+    if (!isConnected) {
+      setMessage({ type: 'error', text: '⚠️ Please connect your Manufacturer wallet first!' });
+      return;
+    }
+
+    // Step 2: Verify wallet is manufacturer
+    const verification = verifyWalletForRole('manufacturer');
+    if (!verification.valid) {
+      setMessage({ type: 'error', text: `⚠️ ${verification.message}` });
+      return;
+    }
+
     setLoading(true);
-    setMessage({ type: '', text: '' });
+    setMessage({ type: '', text: '🔐 Requesting wallet signature...' });
 
     try {
+      // Get selected medicine details
+      const selectedMedicine = getSelectedMedicine();
+
+      // Step 3: Create signing message
+      const signingData = {
+        action: 'CREATE_BATCH',
+        medicineId: formData.medicineId,
+        medicineName: selectedMedicine?.medicineName || 'Unknown',
+        malNumber: selectedMedicine?.malNumber || 'N/A',
+        batchId: autoBatchId,
+        quantity: parseInt(formData.quantity),
+        manufactureDate: formData.manufactureDate,
+        expiryDate: formData.expiryDate,
+        timestamp: Date.now()
+      };
+
+      const messageToSign = JSON.stringify(signingData);
+
+      // Step 4: Request wallet signature
+      let signature;
+      try {
+        signature = await signMessage(messageToSign);
+        setMessage({ type: '', text: '✅ Signature received! Creating batch...' });
+      } catch (error) {
+        setMessage({ type: 'error', text: `❌ Signature rejected: ${error.message}` });
+        setLoading(false);
+        return;
+      }
+
+      // Step 5: Submit to backend with signature
       const token = localStorage.getItem('token');
 
       const response = await fetch('http://localhost:5000/api/batches/create', {
@@ -123,30 +169,33 @@ export default function CreateBatch() {
         },
         body: JSON.stringify({
           medicineId: formData.medicineId,
-          batchId: autoBatchId, // Use auto-generated batch ID
+          batchId: autoBatchId,
           quantity: parseInt(formData.quantity),
           manufactureDate: formData.manufactureDate,
-          expiryDate: formData.expiryDate
+          expiryDate: formData.expiryDate,
+          signature: signature,
+          signingMessage: messageToSign,
+          signingTimestamp: signingData.timestamp
         })
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setMessage({ type: 'success', text: 'Batch created successfully! Pending admin approval.' });
+        setMessage({ type: 'success', text: '✅ Batch created successfully! Pending admin approval.' });
         setFormData({
           medicineId: '',
           quantity: '',
           manufactureDate: '',
           expiryDate: ''
         });
-        generateAutoBatchId(); // Generate new batch ID for next time
+        generateAutoBatchId();
       } else {
-        setMessage({ type: 'error', text: data.message || 'Batch creation failed' });
+        setMessage({ type: 'error', text: `❌ ${data.message || 'Batch creation failed'}` });
       }
     } catch (error) {
       console.error('Error creating batch:', error);
-      setMessage({ type: 'error', text: 'Network error. Please try again.' });
+      setMessage({ type: 'error', text: '❌ Network error. Please try again.' });
     } finally {
       setLoading(false);
     }

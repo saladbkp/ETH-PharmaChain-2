@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useWeb3 } from '../contexts/Web3Context';
 import '../styles/Dashboard.css';
 
 export default function TransferPage() {
+  const { isConnected, signMessage, verifyWalletForRole } = useWeb3();
+
   const [inventory, setInventory] = useState([]);
   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
@@ -100,10 +103,54 @@ export default function TransferPage() {
       return;
     }
 
+    // Step 1: Check wallet connection
+    if (!isConnected) {
+      setMessage({ type: 'error', text: '⚠️ Please connect your wallet first!' });
+      return;
+    }
+
+    // Step 2: Verify wallet matches user role
+    const role = localStorage.getItem('role');
+    const verification = verifyWalletForRole(role);
+    if (!verification.valid) {
+      setMessage({ type: 'error', text: `⚠️ ${verification.message}` });
+      return;
+    }
+
     setSubmitting(true);
-    setMessage({ type: '', text: '' });
+    setMessage({ type: '', text: '🔐 Requesting wallet signature...' });
 
     try {
+      // Get batch and receiver details
+      const selectedItem = getSelectedItem();
+      const receiverUser = users.find(u => u.id === formData.receiverId);
+
+      // Step 3: Create signing message
+      const signingData = {
+        action: 'TRANSFER_MEDICINE',
+        batchId: formData.batchId,
+        medicineName: selectedItem?.medicineName || 'Unknown',
+        quantity: parseInt(formData.quantity),
+        from: 'manufacturer', // Can be 'manufacturer' or 'retailer'
+        to: receiverUser?.username || 'Unknown',
+        toUserId: formData.receiverId,
+        timestamp: Date.now()
+      };
+
+      const messageToSign = JSON.stringify(signingData);
+
+      // Step 4: Request wallet signature
+      let signature;
+      try {
+        signature = await signMessage(messageToSign);
+        setMessage({ type: '', text: '✅ Signature received! Processing transfer...' });
+      } catch (error) {
+        setMessage({ type: 'error', text: `❌ Signature rejected: ${error.message}` });
+        setSubmitting(false);
+        return;
+      }
+
+      // Step 5: Submit to backend with signature
       const token = localStorage.getItem('token');
       const response = await fetch('http://localhost:5000/api/inventory/transfer', {
         method: 'POST',
@@ -114,14 +161,17 @@ export default function TransferPage() {
         body: JSON.stringify({
           batchId: formData.batchId,
           quantity: parseInt(formData.quantity),
-          receiverId: formData.receiverId
+          receiverId: formData.receiverId,
+          signature: signature,
+          signingMessage: messageToSign,
+          signingTimestamp: signingData.timestamp
         })
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setMessage({ type: 'success', text: 'Transfer completed successfully!' });
+        setMessage({ type: 'success', text: '✅ Transfer completed successfully!' });
         setFormData({
           batchId: '',
           quantity: '',
@@ -129,11 +179,11 @@ export default function TransferPage() {
         });
         fetchInventory();
       } else {
-        setMessage({ type: 'error', text: data.message || 'Transfer failed' });
+        setMessage({ type: 'error', text: `❌ ${data.message || 'Transfer failed'}` });
       }
     } catch (error) {
       console.error('Error processing transfer:', error);
-      setMessage({ type: 'error', text: 'Network error. Please try again.' });
+      setMessage({ type: 'error', text: '❌ Network error. Please try again.' });
     } finally {
       setSubmitting(false);
     }

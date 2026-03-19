@@ -1,62 +1,37 @@
 [
   {
-    "id": "cc95d0bd-2e51-4d63-ac8f-7f5382243ba0",
-    "name": "测试类别_1773827327101",
-    "createdAt": 1773827327104,
-    "createdBy": 1
+    "id": "cat-otc-001",
+    "name": "OTC",
+    "description": "Over-the-counter medicines available without prescription",
+    "createdAt": 1710844800000,
+    "createdBy": "admin"
   },
   {
-    "id": "ed48c64b-d93f-4336-b7ca-cc3d377c1c59",
-    "name": "抗生素_1773827390334",
-    "createdAt": 1773827390345,
-    "createdBy": 1
+    "id": "cat-rx-001",
+    "name": "Prescription Medicine",
+    "description": "Medicines requiring a valid prescription from licensed healthcare provider",
+    "createdAt": 1710844800000,
+    "createdBy": "admin"
   },
   {
-    "id": "656a4626-0b06-45cf-8427-37edfa9936c3",
-    "name": "测试类别_1773827879719",
-    "createdAt": 1773827879723,
-    "createdBy": 1
+    "id": "cat-ctrl-001",
+    "name": "Controlled Medicine",
+    "description": "Controlled substances with strict regulatory requirements",
+    "createdAt": 1710844800000,
+    "createdBy": "admin"
   },
   {
-    "id": "74431915-b43b-4100-aca1-fe88f9790ea7",
-    "name": "TestCategory_1773828132002",
-    "createdAt": 1773828132008,
-    "createdBy": 1
+    "id": "cat-supp-001",
+    "name": "Supplement",
+    "description": "Dietary supplements and nutritional products",
+    "createdAt": 1710844800000,
+    "createdBy": "admin"
   },
   {
-    "id": "f5027281-7fd9-42b6-8a6f-481f3dbb5ad9",
-    "name": "测试类别_1773828150431",
-    "createdAt": 1773828150436,
-    "createdBy": 1
-  },
-  {
-    "id": "93857b76-bb96-4046-809a-0fdb4e1fc928",
-    "name": "TestCategory_1773828255278",
-    "createdAt": 1773828255279,
-    "createdBy": 1
-  },
-  {
-    "id": "0bbf9326-3496-4d1d-927b-3de8b196e3aa",
-    "name": "TestCategory_1773828380696",
-    "createdAt": 1773828380699,
-    "createdBy": 1
-  },
-  {
-    "id": "dd71ccfc-7e3e-42d4-a3bd-03b08c2dc788",
-    "name": "TestCategory_1773854008538",
-    "createdAt": 1773854008547,
-    "createdBy": 1
-  },
-  {
-    "id": "a47b5874-5308-4f5c-8992-401772335802",
-    "name": "TestCategory_1773854313292",
-    "createdAt": 1773854313295,
-    "createdBy": 1
-  },
-  {
-    "id": "2757c853-4728-4652-a148-758748c88f37",
-    "name": "测试类别_1773857911138",
-    "createdAt": 1773857911143,
-    "createdBy": 1
+    "id": "cat-herb-001",
+    "name": "Herbal Medicine",
+    "description": "Traditional and herbal medicinal products",
+    "createdAt": 1710844800000,
+    "createdBy": "admin"
   }
 ]

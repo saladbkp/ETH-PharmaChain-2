@@ -1,5 +1,7 @@
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import WalletConnect from './WalletConnect';
+import { useWeb3 } from '../contexts/Web3Context';
 import '../styles/Dashboard.css';
 
 export default function DashboardLayout() {
@@ -7,15 +9,22 @@ export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { connectWallet, disconnectWallet, isConnected } = useWeb3();
 
   useEffect(() => {
     const userRole = localStorage.getItem('role');
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');
+      return;
     }
     setRole(userRole);
-  }, [navigate]);
+
+    // Auto-connect wallet when entering dashboard
+    if (!isConnected) {
+      connectWallet();
+    }
+  }, [navigate, isConnected, connectWallet]);
 
   const manufacturerLinks = [
     { path: '/dashboard/manufacturer/register', label: 'Register Medicine' },
@@ -55,7 +64,11 @@ export default function DashboardLayout() {
   };
 
   const handleLogout = () => {
+    // Disconnect wallet before logging out
+    disconnectWallet();
+    // Clear all localStorage
     localStorage.clear();
+    // Navigate to login
     navigate('/login');
   };
 
@@ -106,6 +119,7 @@ export default function DashboardLayout() {
             ☰
           </button>
           <h1>PharmaChain Dashboard</h1>
+          <WalletConnect />
         </header>
 
         <div className="dashboard-content">

@@ -6,33 +6,42 @@ const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleLogin = async () => {
+        setLoading(true);
+        setMessage("");
+
         try {
             const response = await fetch("http://localhost:5000/api/auth/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password }),
             });
-    
-            // First parse JSON from response
+
             const data = await response.json();
-    
-            if (response.ok) {
-                const { token, role } = data; // Use 'data', not 'response.data'
-                
-                // Store token and role in localStorage
-                localStorage.setItem("token", token);
-                localStorage.setItem("role", role);
-    
-                setMessage(`✅ Login successful! Token: ${token}`);
-                navigate("/dashboard");
-            } else {
+
+            if (!response.ok) {
                 setMessage("⚠️ Login failed, check your username or password");
+                setLoading(false);
+                return;
             }
+
+            const { token, role } = data;
+            localStorage.setItem("token", token);
+            localStorage.setItem("role", role);
+
+            setMessage("✅ Login successful!");
+
+            setTimeout(() => {
+                navigate("/dashboard");
+            }, 500);
+
         } catch (error) {
-            setMessage(`⚠️ Try again ${error}`);
+            setMessage(`⚠️ Error: ${error.message}`);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -46,13 +55,26 @@ const Login = () => {
                 <FaHome /> home
             </button>
             <h1 style={styles.title}>Login</h1>
-            {message && <p style={styles.message}>{message}</p>}
+            {message && (
+                <div style={{
+                    ...styles.message,
+                    whiteSpace: 'pre-line',
+                    backgroundColor: message.includes('✅') ? '#d4edda' : message.includes('⚠️') ? '#f8d7da' : '#fff3cd',
+                    color: message.includes('✅') ? '#155724' : message.includes('⚠️') ? '#721c24' : '#856404',
+                    padding: '12px',
+                    borderRadius: '5px',
+                    marginBottom: '15px'
+                }}>
+                    {message}
+                </div>
+            )}
             <input
                 type="text"
                 placeholder="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 style={styles.input}
+                disabled={loading}
             />
             <input
                 type="password"
@@ -60,13 +82,29 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 style={styles.input}
+                disabled={loading}
             />
-            <button onClick={handleLogin} disabled={!username || !password} style={styles.button}>
-                Login
+            <button
+                onClick={handleLogin}
+                disabled={!username || !password || loading}
+                style={{
+                    ...styles.button,
+                    backgroundColor: loading ? '#6c757d' : '#007BFF',
+                    cursor: loading ? 'not-allowed' : 'pointer'
+                }}
+            >
+                {loading ? '🔄 Logging in...' : 'Login'}
             </button>
             <p style={styles.helpText}>
                 Contact admin to register new accounts
             </p>
+            <div style={styles.walletInfo}>
+                <strong>💡 Note:</strong>
+                <p style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
+                    Your wallet will be automatically connected after successful login.
+                    Make sure MetaMask is installed and unlocked.
+                </p>
+            </div>
         </div>
     );
 };
@@ -133,6 +171,32 @@ const styles = {
         fontSize: "12px",
         color: "#999",
         fontStyle: "italic",
+    },
+    walletInfo: {
+        marginTop: "20px",
+        padding: "15px",
+        backgroundColor: "#f8f9fa",
+        borderRadius: "5px",
+        border: "1px solid #dee2e6",
+        fontSize: "12px",
+        textAlign: "left",
+    },
+    walletList: {
+        marginTop: "10px",
+    },
+    walletItem: {
+        display: "flex",
+        justifyContent: "space-between",
+        padding: "5px 0",
+        borderBottom: "1px solid #e9ecef",
+    },
+    roleLabel: {
+        fontWeight: "bold",
+        color: "#495057",
+    },
+    address: {
+        fontFamily: "monospace",
+        color: "#6c757d",
     },
 };
 

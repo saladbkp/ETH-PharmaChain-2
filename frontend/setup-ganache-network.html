@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Ganache Network to MetaMask</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .step h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .wallet-addresses {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .wallet-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .wallet-item:last-child {
+            border-bottom: none;
+        }
+        .role {
+            font-weight: bold;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 Setup Ganache Network</h1>
+
+        <div class="info">
+            <strong>ℹ️ Info:</strong> This page will help you add the Ganache network to MetaMask with one click!
+        </div>
+
+        <div class="wallet-addresses">
+            <h3>💰 Required Wallet Addresses:</h3>
+            <div class="wallet-item">
+                <span class="role">Admin:</span>
+                <code>0xdd81CD832b7054e52e9c1e4b4c52b24391a7E035</code>
+            </div>
+            <div class="wallet-item">
+                <span class="role">Manufacturer:</span>
+                <code>0xa17c59c9df7ac32D6a4a62458aC824543c09ec4f</code>
+            </div>
+            <div class="wallet-item">
+                <span class="role">Retailer:</span>
+                <code>0x60b1F46843Fc5F6A5c74B3a057BB3fd83A09278e</code>
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>📋 Step 1: Check MetaMask Installation</h3>
+            <p id="metamask-status">Checking...</p>
+        </div>
+
+        <div class="step">
+            <h3>🌐 Step 2: Add Ganache Network</h3>
+            <p>Click the button below to automatically add Ganache network to MetaMask:</p>
+            <button id="addNetwork" onclick="addGanacheNetwork()" disabled>
+                Add Ganache Network to MetaMask
+            </button>
+        </div>
+
+        <div class="step">
+            <h3>📝 Step 3: Import Ganache Accounts</h3>
+            <p><strong>Important:</strong> After adding the network, you need to import the Ganache accounts into MetaMask.</p>
+            <ol>
+                <li>Open Ganache GUI or CLI</li>
+                <li>Click on an account to see its private key</li>
+                <li>In MetaMask: Account dropdown → Import Account</li>
+                <li>Paste the private key and click Import</li>
+                <li>Repeat for all 3 accounts (Admin, Manufacturer, Retailer)</li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h3>✅ Step 4: Verify Connection</h3>
+            <p>After importing accounts:</p>
+            <ul>
+                <li>Switch MetaMask to "Ganache Local" network</li>
+                <li>Select the account matching your role (e.g., Admin account for admin login)</li>
+                <li>Go to login page and login!</li>
+            </ul>
+        </div>
+
+        <div id="success" class="success">
+            ✅ Success! Ganache network added to MetaMask. Please switch to this network in MetaMask.
+        </div>
+
+        <div id="error" class="error">
+            ❌ Error: <span id="error-message"></span>
+        </div>
+
+        <div class="info" style="margin-top: 30px;">
+            <strong>🔧 Manual Setup (if auto-setup doesn't work):</strong>
+            <ol>
+                <li>Open MetaMask</li>
+                <li>Click network dropdown → "Add Network" → "Add a Custom Network"</li>
+                <li>Enter these settings:
+                    <ul>
+                        <li><strong>Network Name:</strong> <code>Ganache Local</code></li>
+                        <li><strong>New RPC URL:</strong> <code>http://127.0.0.1:7545</code></li>
+                        <li><strong>Chain ID:</strong> <code>1337</code></li>
+                        <li><strong>Currency Symbol:</strong> <code>ETH</code></li>
+                    </ul>
+                </li>
+                <li>Click "Save"</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Check if MetaMask is installed
+        function checkMetaMask() {
+            const statusEl = document.getElementById('metamask-status');
+            const addNetworkBtn = document.getElementById('addNetwork');
+
+            if (typeof window.ethereum !== 'undefined') {
+                statusEl.innerHTML = '✅ MetaMask is installed!';
+                addNetworkBtn.disabled = false;
+            } else {
+                statusEl.innerHTML = '❌ MetaMask not installed. Please install from <a href="https://metamask.io" target="_blank">metamask.io</a>';
+                addNetworkBtn.disabled = true;
+            }
+        }
+
+        // Add Ganache network to MetaMask
+        async function addGanacheNetwork() {
+            const successEl = document.getElementById('success');
+            const errorEl = document.getElementById('error');
+            const errorMessage = document.getElementById('error-message');
+
+            try {
+                // Check if MetaMask is installed
+                if (typeof window.ethereum === 'undefined') {
+                    throw new Error('MetaMask is not installed');
+                }
+
+                // Request to add Ganache network
+                await window.ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [{
+                        chainId: '0x539', // 1337 in hex
+                        chainName: 'Ganache Local',
+                        nativeCurrency: {
+                            name: 'ETH',
+                            symbol: 'ETH',
+                            decimals: 18
+                        },
+                        rpcUrls: ['http://127.0.0.1:7545'],
+                        blockExplorerUrls: null
+                    }]
+                });
+
+                // Success
+                successEl.style.display = 'block';
+                errorEl.style.display = 'none';
+
+                // Try to switch to the network
+                try {
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: '0x539' }]
+                    });
+                } catch (switchError) {
+                    // Network already added, just need to switch manually
+                    console.log('Please switch to Ganache network manually in MetaMask');
+                }
+
+            } catch (error) {
+                // Error
+                errorEl.style.display = 'block';
+                successEl.style.display = 'none';
+                errorMessage.textContent = error.message || error.toString();
+                console.error('Error adding network:', error);
+            }
+        }
+
+        // Check MetaMask on page load
+        window.addEventListener('load', checkMetaMask);
+    </script>
+</body>
+</html>

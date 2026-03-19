@@ -1,107 +1,16 @@
 [
   {
-    "id": "96a3aa8b-dbcf-440c-abfc-de183a5e5656",
-    "batchId": "BATCH-1773828384293",
+    "id": "cb7b2b02-ca56-4504-9690-a858d6baba9d",
+    "batchId": "BATCH-20260319-AAEIE",
     "userId": 2,
-    "quantity": 14254,
-    "updatedAt": 1773886633192
+    "quantity": 400,
+    "updatedAt": 1773914908652
   },
   {
-    "id": "16078e53-385b-4385-a498-dd5a0bff26ea",
-    "batchId": "BATCH-1773828384293",
+    "id": "bff54424-c693-43dd-84f7-82cbf92eadf0",
+    "batchId": "BATCH-20260319-AAEIE",
     "userId": "3",
-    "quantity": 2600,
-    "updatedAt": 1773859319923
-  },
-  {
-    "id": "26d02718-1ac1-4b37-9ba0-6e8706072efe",
-    "batchId": "BASHA1",
-    "userId": 2,
-    "quantity": 6,
-    "updatedAt": 1773856893715
-  },
-  {
-    "id": "e0c495b2-7e85-4a42-b2f9-6224ab9498d2",
-    "batchId": "BASHA1",
-    "userId": "user1",
-    "quantity": 1,
-    "updatedAt": 1773835105555
-  },
-  {
-    "id": "5bc99e63-9a89-438e-aa32-33f83b6d51a6",
-    "batchId": "BATCH-1773854012155",
-    "userId": 2,
-    "quantity": 2000,
-    "updatedAt": 1773856892769
-  },
-  {
-    "id": "6f836d5e-6c6e-4d00-b732-8cdcb29fb9e4",
-    "batchId": "BATCH-1773854316883",
-    "userId": 2,
-    "quantity": 800,
-    "updatedAt": 1773888643348
-  },
-  {
-    "id": "7baf91ac-daf8-4e0f-8125-fde0fef9f9bb",
-    "batchId": "BATCH-1773828384293",
-    "userId": "user3",
-    "quantity": 100,
-    "updatedAt": 1773854482701
-  },
-  {
-    "id": "3ad5bb99-b268-48e0-babb-4cb7ec15ec4a",
-    "batchId": "BATCH-1773828384293",
-    "userId": 6,
-    "quantity": 46,
-    "updatedAt": 1773886633192
-  },
-  {
-    "id": "10b9d7ef-4a83-4089-aba8-d8bca263d582",
-    "batchId": "BATCH-20260318-KKAHB",
-    "userId": 2,
-    "quantity": 3000,
-    "updatedAt": 1773856890712
-  },
-  {
-    "id": "d30d3a25-76da-4317-ac7f-e402f7760bd9",
-    "batchId": "BATCH-20260318-827BG",
-    "userId": 2,
-    "quantity": 4000,
-    "updatedAt": 1773857268084
-  },
-  {
-    "id": "c3ab6355-631e-43b3-9dca-0d81e63b775a",
-    "batchId": "BATCH-1773854316883",
-    "userId": "3",
-    "quantity": 1200,
-    "updatedAt": 1773888643349
-  },
-  {
-    "id": "cfce1cba-681c-4e7d-b24b-18e617ebf251",
-    "batchId": "BATCH-20260318-EJ9R8",
-    "userId": 2,
-    "quantity": 2000,
-    "updatedAt": 1773858589069
-  },
-  {
-    "id": "604dd88f-908d-4055-af0f-04e5584dc2ac",
-    "batchId": "BATCH-20260318-FYMT5",
-    "userId": 2,
-    "quantity": 3333,
-    "updatedAt": 1773858870515
-  },
-  {
-    "id": "cdbfbe71-7e98-49ee-8b4e-0996703c06c1",
-    "batchId": "BATCH-20260318-3VS50",
-    "userId": "3",
-    "quantity": 2000,
-    "updatedAt": 1773858878223
-  },
-  {
-    "id": "3cc9f632-0f01-480a-858a-88d7db553a0e",
-    "batchId": "BATCH-20260319-QRZ99",
-    "userId": 2,
-    "quantity": 1200,
-    "updatedAt": 1773888529265
+    "quantity": 600,
+    "updatedAt": 1773914908652
   }
 ]

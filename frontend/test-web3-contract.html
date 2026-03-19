@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaChain Web3 连接测试</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@4.16.0/dist/web3.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .status.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        .status.error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .status.info {
+            background: #d1ecf1;
+            border-left-color: #0c5460;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .info-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .wallet-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .wallet-card {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .wallet-card.admin {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        .wallet-card.manufacturer {
+            border-color: #28a745;
+            background: #f0fff4;
+        }
+        .wallet-card.retailer {
+            border-color: #ffc107;
+            background: #fffbe0;
+        }
+        .wallet-card h4 {
+            margin: 10px 0;
+            color: #333;
+        }
+        .wallet-card code {
+            display: block;
+            font-size: 11px;
+            color: #666;
+            word-break: break-all;
+            margin: 5px 0;
+        }
+        code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 PharmaChain Web3 连接测试</h1>
+
+        <div id="results"></div>
+
+        <div class="info-box">
+            <h3>💰 钱包地址配置</h3>
+            <div class="wallet-info">
+                <div class="wallet-card admin">
+                    <h4>👑 Admin</h4>
+                    <code>0xdd81CD832b7054e52e9c1e4b4c52b24391a7E035</code>
+                </div>
+                <div class="wallet-card manufacturer">
+                    <h4>🏭 Manufacturer</h4>
+                    <code>0xa17c59c9df7ac32D6a4a62458aC824543c09ec4f</code>
+                </div>
+                <div class="wallet-card retailer">
+                    <h4>🏪 Retailer</h4>
+                    <code>0x60b1F46843Fc5F6A5c74B3a057BB3fd83A09278e</code>
+                </div>
+            </div>
+        </div>
+
+        <button id="connectBtn" onclick="testWeb3Connection()">🔗 测试 Web3 连接</button>
+        <button id="checkNetworkBtn" onclick="checkNetwork()" style="display: none;">🌐 检查网络配置</button>
+    </div>
+
+    <script type="module">
+        // 合约配置
+        const CONTRACT_CONFIG = {
+            address: '0x7698e168808CF0C6FE8C9d5aCADac90aB7066DDA',
+            chainId: 5777,
+            rpcUrl: 'http://127.0.0.1:7545'
+        };
+
+        // 钱包地址映射
+        const WALLET_ADDRESSES = {
+            admin: '0xdd81CD832b7054e52e9c1e4b4c52b24391a7E035',
+            manufacturer: '0xa17c59c9df7ac32D6a4a62458aC824543c09ec4f',
+            retailer: '0x60b1F46843Fc5F6A5c74B3a057BB3fd83A09278e'
+        };
+
+        let web3 = null;
+        let accounts = [];
+
+        // 测试 Web3 连接
+        async function testWeb3Connection() {
+            const resultsDiv = document.getElementById('results');
+            const connectBtn = document.getElementById('connectBtn');
+            const checkNetworkBtn = document.getElementById('checkNetworkBtn');
+
+            resultsDiv.innerHTML = '<div class="status">🔍 正在测试 Web3 连接...</div>';
+            connectBtn.disabled = true;
+
+            try {
+                // 1. 检查 MetaMask 是否安装
+                if (typeof window.ethereum === 'undefined') {
+                    resultsDiv.innerHTML = `
+                        <div class="status error">
+                            <h3>❌ MetaMask 未安装</h3>
+                            <p>请从 <a href="https://metamask.io" target="_blank">metamask.io</a> 安装 MetaMask</p>
+                        </div>
+                    `;
+                    connectBtn.disabled = false;
+                    return;
+                }
+
+                // 2. 请求账户访问
+                resultsDiv.innerHTML += '<div class="status">📱 请求账户访问...</div>';
+                accounts = await window.ethereum.request({
+                    method: 'eth_requestAccounts'
+                });
+
+                // 3. 创建 Web3 实例
+                web3 = new Web3(window.ethereum);
+
+                // 4. 获取网络信息
+                const chainId = await web3.eth.getChainId();
+                const currentChainId = parseInt(chainId, 16);
+
+                // 5. 获取账户余额
+                const balance = await web3.eth.getBalance(accounts[0]);
+                const balanceEth = web3.utils.fromWei(balance, 'ether');
+
+                // 6. 检查连接的账户
+                let role = 'Unknown';
+                if (accounts[0].toLowerCase() === WALLET_ADDRESSES.admin.toLowerCase()) {
+                    role = 'Admin 👑';
+                } else if (accounts[0].toLowerCase() === WALLET_ADDRESSES.manufacturer.toLowerCase()) {
+                    role = 'Manufacturer 🏭';
+                } else if (accounts[0].toLowerCase() === WALLET_ADDRESSES.retailer.toLowerCase()) {
+                    role = 'Retailer 🏪';
+                }
+
+                // 显示结果
+                let html = '';
+
+                // 网络状态
+                if (currentChainId === CONTRACT_CONFIG.chainId) {
+                    html += `
+                        <div class="status success">
+                            <h3>✅ 网络连接成功！</h3>
+                            <p><strong>当前网络:</strong> Ganache (Chain ID: ${currentChainId})</p>
+                            <p><strong>合约网络:</strong> Ganache (Chain ID: ${CONTRACT_CONFIG.chainId})</p>
+                            <p><strong>状态:</strong> ✅ 网络匹配</p>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="status error">
+                            <h3>⚠️ 网络不匹配</h3>
+                            <p><strong>当前网络:</strong> ${getNetworkName(currentChainId)} (Chain ID: ${currentChainId})</p>
+                            <p><strong>需要网络:</strong> Ganache (Chain ID: ${CONTRACT_CONFIG.chainId})</p>
+                            <p><strong>解决方法:</strong></p>
+                            <ol>
+                                <li>打开 MetaMask</li>
+                                <li>点击网络下拉菜单</li>
+                                <li>选择或添加 "Ganache Local" 网络</li>
+                                <li>确保 RPC URL: http://127.0.0.1:7545</li>
+                                <li>确保 Chain ID: 5777</li>
+                            </ol>
+                        </div>
+                    `;
+                }
+
+                // 账户信息
+                html += `
+                    <div class="status">
+                        <h3>👛 连接的账户</h3>
+                        <p><strong>地址:</strong> <code>${accounts[0]}</code></p>
+                        <p><strong>角色:</strong> ${role}</p>
+                        <p><strong>余额:</strong> ${parseFloat(balanceEth).toFixed(4)} ETH</p>
+                    </div>
+                `;
+
+                // 检查账户是否匹配预期地址
+                const isAdmin = accounts[0].toLowerCase() === WALLET_ADDRESSES.admin.toLowerCase();
+                const isManufacturer = accounts[0].toLowerCase() === WALLET_ADDRESSES.manufacturer.toLowerCase();
+                const isRetailer = accounts[0].toLowerCase() === WALLET_ADDRESSES.retailer.toLowerCase();
+
+                if (isAdmin || isManufacturer || isRetailer) {
+                    html += `
+                        <div class="status success">
+                            <h3>✅ 账户验证成功！</h3>
+                            <p>你的账户与系统配置匹配。</p>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="status error">
+                            <h3>⚠️ 账户不匹配</h3>
+                            <p><strong>当前账户:</strong> <code>${accounts[0]}</code></p>
+                            <p><strong>预期账户:</strong></p>
+                            <ul>
+                                <li>Admin: <code>${WALLET_ADDRESSES.admin}</code></li>
+                                <li>Manufacturer: <code>${WALLET_ADDRESSES.manufacturer}</code></li>
+                                <li>Retailer: <code>${WALLET_ADDRESSES.retailer}</code></li>
+                            </ul>
+                            <p><strong>解决方法:</strong> 在 MetaMask 中切换到正确的账户</p>
+                        </div>
+                    `;
+                }
+
+                // 合约连接测试
+                if (currentChainId === CONTRACT_CONFIG.chainId) {
+                    try {
+                        // 尝试连接合约
+                        const contract = new web3.eth.Contract([], CONTRACT_CONFIG.address);
+
+                        html += `
+                            <div class="status success">
+                                <h3>✅ 合约连接成功！</h3>
+                                <p><strong>合约地址:</strong> <code>${CONTRACT_CONFIG.address}</code></p>
+                                <p><strong>状态:</strong> 可以与合约交互</p>
+                            </div>
+                        `;
+
+                    } catch (error) {
+                        html += `
+                            <div class="status error">
+                                <h3>❌ 合约连接失败</h3>
+                                <p>${error.message}</p>
+                            </div>
+                        `;
+                    }
+                }
+
+                // 添加重试按钮
+                html += `
+                    <div class="info-box">
+                        <h3>📋 下一步:</h3>
+                        ${currentChainId === CONTRACT_CONFIG.chainId ? `
+                            <p>✅ 所有配置正确！可以开始使用系统</p>
+                            <p><a href="http://localhost:3000/login" target="_blank">前往登录页面 →</a></p>
+                        ` : `
+                            <p>⚠️ 请先修复网络配置，然后刷新此页面重新测试</p>
+                        `}
+                    </div>
+                `;
+
+                resultsDiv.innerHTML = html;
+                checkNetworkBtn.style.display = 'block';
+                connectBtn.disabled = false;
+
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="status error">
+                        <h3>❌ 连接失败</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                connectBtn.disabled = false;
+            }
+        }
+
+        // 检查网络配置
+        async function checkNetwork() {
+            const resultsDiv = document.getElementById('results');
+
+            resultsDiv.innerHTML = '<div class="status">🔍 检查网络配置...</div>';
+
+            try {
+                // 获取当前网络
+                const chainId = await web3.eth.getChainId();
+                const currentChainId = parseInt(chainId, 16);
+
+                // 获取当前账户
+                accounts = await web3.eth.getAccounts();
+
+                // 获取区块号
+                const blockNumber = await web3.eth.getBlockNumber();
+
+                // 获取 gas price
+                const gasPrice = await web3.eth.getGasPrice();
+                const gasPriceGwei = web3.utils.fromWei(gasPrice, 'gwei');
+
+                let html = `
+                    <div class="status info">
+                        <h3>🌐 网络详细信息</h3>
+                        <p><strong>当前 Chain ID:</strong> ${currentChainId}</p>
+                        <p><strong>网络名称:</strong> ${getNetworkName(currentChainId)}</p>
+                        <p><strong>当前区块:</strong> #${blockNumber}</p>
+                        <p><strong>Gas Price:</strong> ${parseFloat(gasPriceGwei).toFixed(2)} Gwei</p>
+                    </div>
+                `;
+
+                if (accounts.length > 0) {
+                    const balance = await web3.eth.getBalance(accounts[0]);
+                    const balanceEth = web3.utils.fromWei(balance, 'ether');
+
+                    html += `
+                        <div class="status info">
+                            <h3>👛 账户详细信息</h3>
+                            <p><strong>地址:</strong> <code>${accounts[0]}</code></p>
+                            <p><strong>余额:</strong> ${parseFloat(balanceEth).toFixed(4)} ETH</p>
+                        </div>
+                    `;
+                }
+
+                // 网络匹配检查
+                if (currentChainId === CONTRACT_CONFIG.chainId) {
+                    html += `
+                        <div class="status success">
+                            <h3>✅ 网络配置正确</h3>
+                            <p>你的网络配置与合约部署环境完全匹配！</p>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="status error">
+                            <h3>⚠️ 网络不匹配</h3>
+                            <p><strong>你的 Chain ID:</strong> ${currentChainId} (${getNetworkName(currentChainId)})</p>
+                            <p><strong>合约 Chain ID:</strong> ${CONTRACT_CONFIG.chainId} (Ganache)</p>
+                            <hr>
+                            <p><strong>🔧 如何修复:</strong></p>
+                            <ol style="margin-left: 20px;">
+                                <li>打开 MetaMask</li>
+                                <li>点击网络下拉菜单</li>
+                                <li>如果看到 "Ganache Local"，点击选择它</li>
+                                <li>如果没有，点击 "Add Network"</li>
+                                <li>添加自定义网络:
+                                    <ul>
+                                        <li>Name: <code>Ganache Local</code></li>
+                                        <li>RPC: <code>http://127.0.0.1:7545</code></li>
+                                        <li>Chain ID: <code>5777</code></li>
+                                        <li>Symbol: <code>ETH</code></li>
+                                    </ul>
+                                </li>
+                                <li>点击 "Save"</li>
+                            </ol>
+                        </div>
+                    `;
+                }
+
+                resultsDiv.innerHTML = html;
+
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="status error">
+                        <h3>❌ 检查失败</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 获取网络名称
+        function getNetworkName(chainId) {
+            const networks = {
+                1: 'Ethereum Mainnet',
+                5: 'Goerli Testnet',
+                1115511111: 'Ganache CLI',
+                1337: 'Ganache GUI (Standard)',
+                5777: 'Ganache GUI (Custom)',
+                80001: 'Matic Mumbai',
+                137: 'Matic Mainnet'
+            };
+            return networks[chainId] || `Unknown Network (${chainId})`;
+        }
+
+        // 页面加载时检查连接状态
+        window.addEventListener('load', () => {
+            if (typeof window.ethereum !== 'undefined') {
+                window.ethereum.on('accountsChanged', () => {
+                    location.reload();
+                });
+                window.ethereum.on('chainChanged', () => {
+                    location.reload();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

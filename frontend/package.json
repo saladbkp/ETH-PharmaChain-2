@@ -11,6 +11,7 @@
     "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "ethers": "^5.7.2",
     "jsqr": "^1.4.0",
     "lucide-react": "^0.485.0",
     "qrcode": "^1.5.4",

@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useWeb3 } from '../../contexts/Web3Context';
 import '../../styles/Dashboard.css';
 
 export default function PendingMedicines() {
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const { isConnected, verifyWalletForRole, signMessage, correctNetwork } = useWeb3();
 
   useEffect(() => {
     fetchPendingMedicines();
@@ -34,19 +36,56 @@ export default function PendingMedicines() {
   };
 
   const handleApprove = async (medicineId) => {
+    // Check wallet connection
+    if (!isConnected) {
+      setMessage({ type: 'error', text: 'Please connect your wallet first!' });
+      return;
+    }
+
+    // Check if connected to correct network
+    if (!correctNetwork) {
+      setMessage({ type: 'error', text: 'Please connect to Ganache network (Chain ID: 1337)' });
+      return;
+    }
+
+    // Verify wallet matches admin role
+    const verification = verifyWalletForRole('admin');
+    if (!verification.valid) {
+      setMessage({ type: 'error', text: verification.message });
+      return;
+    }
+
     try {
+      // Create approval message to sign
+      const approvalMessage = `Approve medicine ${medicineId} at ${new Date().toISOString()}`;
+
+      // Request wallet signature
+      let signature;
+      try {
+        signature = await signMessage(approvalMessage);
+      } catch (signError) {
+        setMessage({ type: 'error', text: 'Signature rejected by user' });
+        return;
+      }
+
+      // Send approval request with signature
       const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:5000/api/medicines/${medicineId}/approve`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+          signature,
+          message: approvalMessage,
+          timestamp: Date.now()
+        })
       });
       const data = await response.json();
 
       if (response.ok) {
-        setMessage({ type: 'success', text: `Medicine approved with MAL: ${data.medicine.malNumber}` });
+        setMessage({ type: 'success', text: `✅ Medicine approved with MAL: ${data.medicine.malNumber}` });
         fetchPendingMedicines();
       } else {
         setMessage({ type: 'error', text: data.message || 'Approval failed' });
@@ -58,11 +97,43 @@ export default function PendingMedicines() {
   };
 
   const handleReject = async (medicineId) => {
+    // Check wallet connection
+    if (!isConnected) {
+      setMessage({ type: 'error', text: 'Please connect your wallet first!' });
+      return;
+    }
+
+    // Check if connected to correct network
+    if (!correctNetwork) {
+      setMessage({ type: 'error', text: 'Please connect to Ganache network (Chain ID: 1337)' });
+      return;
+    }
+
+    // Verify wallet matches admin role
+    const verification = verifyWalletForRole('admin');
+    if (!verification.valid) {
+      setMessage({ type: 'error', text: verification.message });
+      return;
+    }
+
     // eslint-disable-next-line no-restricted-globals
     const notes = window.prompt('Enter reason for rejection:');
     if (notes === null) return; // User cancelled
 
     try {
+      // Create rejection message to sign
+      const rejectMessage = `Reject medicine ${medicineId} at ${new Date().toISOString()}`;
+
+      // Request wallet signature
+      let signature;
+      try {
+        signature = await signMessage(rejectMessage);
+      } catch (signError) {
+        setMessage({ type: 'error', text: 'Signature rejected by user' });
+        return;
+      }
+
+      // Send rejection request with signature
       const token = localStorage.getItem('token');
       const response = await fetch(`http://localhost:5000/api/medicines/${medicineId}/reject`, {
         method: 'POST',
@@ -70,12 +141,17 @@ export default function PendingMedicines() {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ notes })
+        body: JSON.stringify({
+          notes,
+          signature,
+          message: rejectMessage,
+          timestamp: Date.now()
+        })
       });
       const data = await response.json();
 
       if (response.ok) {
-        setMessage({ type: 'success', text: 'Medicine rejected successfully' });
+        setMessage({ type: 'success', text: '❌ Medicine rejected successfully' });
         fetchPendingMedicines();
       } else {
         setMessage({ type: 'error', text: data.message || 'Rejection failed' });

@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useWeb3 } from '../../contexts/Web3Context';
 import '../../styles/Dashboard.css';
 
 export default function RegisterMedicine() {
+  const { isConnected, signMessage, verifyWalletForRole } = useWeb3();
+
   const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     medicineName: '',
@@ -109,19 +112,60 @@ export default function RegisterMedicine() {
       return;
     }
 
+    // Step 1: Check wallet connection
+    if (!isConnected) {
+      setMessage({ type: 'error', text: '⚠️ Please connect your Manufacturer wallet first!' });
+      return;
+    }
+
+    // Step 2: Verify wallet is manufacturer
+    const verification = verifyWalletForRole('manufacturer');
+    if (!verification.valid) {
+      setMessage({ type: 'error', text: `⚠️ ${verification.message}` });
+      return;
+    }
+
     setLoading(true);
-    setMessage({ type: '', text: '' });
+    setMessage({ type: '', text: '🔐 Requesting wallet signature...' });
 
     try {
+      // Step 3: Create signing message
+      const signingData = {
+        action: 'REGISTER_MEDICINE',
+        medicineName: formData.medicineName,
+        category: formData.category,
+        companyName: formData.companyName,
+        registrationNumber: autoRegistrationNumber,
+        contactEmail: formData.contactEmail,
+        timestamp: Date.now()
+      };
+
+      const messageToSign = JSON.stringify(signingData);
+
+      // Step 4: Request wallet signature
+      let signature;
+      try {
+        signature = await signMessage(messageToSign);
+        setMessage({ type: '', text: '✅ Signature received! Submitting medicine...' });
+      } catch (error) {
+        setMessage({ type: 'error', text: `❌ Signature rejected: ${error.message}` });
+        setLoading(false);
+        return;
+      }
+
+      // Step 5: Submit to backend with signature
       const token = localStorage.getItem('token');
 
       const formDataToSend = new FormData();
       formDataToSend.append('medicineName', formData.medicineName);
       formDataToSend.append('category', formData.category);
       formDataToSend.append('companyName', formData.companyName);
-      formDataToSend.append('registrationNumber', autoRegistrationNumber); // Use auto-generated registration number
+      formDataToSend.append('registrationNumber', autoRegistrationNumber);
       formDataToSend.append('contactEmail', formData.contactEmail);
       formDataToSend.append('approvalDocument', formData.approvalDocument);
+      formDataToSend.append('signature', signature);
+      formDataToSend.append('signingMessage', messageToSign);
+      formDataToSend.append('signingTimestamp', signingData.timestamp);
 
       const response = await fetch('http://localhost:5000/api/medicines/submit', {
         method: 'POST',
@@ -134,7 +178,7 @@ export default function RegisterMedicine() {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage({ type: 'success', text: 'Medicine submitted successfully! Pending admin approval.' });
+        setMessage({ type: 'success', text: '✅ Medicine submitted successfully! Pending admin approval.' });
         setFormData({
           medicineName: '',
           category: '',
@@ -142,15 +186,14 @@ export default function RegisterMedicine() {
           contactEmail: '',
           approvalDocument: null
         });
-        generateAutoRegistrationNumber(); // Generate new registration number for next time
-        // Reset file input
+        generateAutoRegistrationNumber();
         document.getElementById('approvalDocument').value = '';
       } else {
-        setMessage({ type: 'error', text: data.message || 'Submission failed' });
+        setMessage({ type: 'error', text: `❌ ${data.message || 'Submission failed'}` });
       }
     } catch (error) {
       console.error('Error submitting medicine:', error);
-      setMessage({ type: 'error', text: 'Network error. Please try again.' });
+      setMessage({ type: 'error', text: '❌ Network error. Please try again.' });
     } finally {
       setLoading(false);
     }
