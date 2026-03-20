@@ -25,5 +25,32 @@
     "approvedBy": 1,
     "notes": "no drug",
     "createdAt": 1773914273668
+  },
+  {
+    "id": "d0a20e5c-1996-468a-8240-af521d5417a6",
+    "entityType": "medicine",
+    "entityId": "4f3628fa-480a-4edf-9ee4-f44785099013",
+    "action": "approved",
+    "approvedBy": 1,
+    "notes": "MAL number generated: MAL202600002M",
+    "createdAt": 1773990386654
+  },
+  {
+    "id": "8c1726fd-8d00-414e-b8aa-df6765104d19",
+    "entityType": "batch",
+    "entityId": "de0f95cc-6786-48aa-a59e-d46b972793d9",
+    "action": "approved",
+    "approvedBy": 1,
+    "notes": "Batch BATCH-20260320-TYFUE approved",
+    "createdAt": 1773990513588
+  },
+  {
+    "id": "61e05132-21ed-44b3-8a7d-03a22d2cf79a",
+    "entityType": "batch",
+    "entityId": "77ae9285-81b4-4d59-91ae-c761843f417c",
+    "action": "approved",
+    "approvedBy": 1,
+    "notes": "Batch BATCH-20260320-NKIJF approved",
+    "createdAt": 1773990519272
   }
 ]

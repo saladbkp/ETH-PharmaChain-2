@@ -24,5 +24,31 @@
     "manufacturerId": 2,
     "submittedAt": 1773914890392,
     "approvedAt": null
+  },
+  {
+    "id": "77ae9285-81b4-4d59-91ae-c761843f417c",
+    "medicineId": "4f3628fa-480a-4edf-9ee4-f44785099013",
+    "malNumber": "MAL202600002M",
+    "batchId": "BATCH-20260320-NKIJF",
+    "quantity": 1000,
+    "manufactureDate": "2003-10-10T00:00:00.000Z",
+    "expiryDate": "2027-10-10T00:00:00.000Z",
+    "status": "approved",
+    "manufacturerId": 2,
+    "submittedAt": 1773990444060,
+    "approvedAt": 1773990519270
+  },
+  {
+    "id": "de0f95cc-6786-48aa-a59e-d46b972793d9",
+    "medicineId": "4f3628fa-480a-4edf-9ee4-f44785099013",
+    "malNumber": "MAL202600002M",
+    "batchId": "BATCH-20260320-TYFUE",
+    "quantity": 200,
+    "manufactureDate": "2001-10-10T00:00:00.000Z",
+    "expiryDate": "2003-10-10T00:00:00.000Z",
+    "status": "approved",
+    "manufacturerId": 2,
+    "submittedAt": 1773990492760,
+    "approvedAt": 1773990513586
   }
 ]

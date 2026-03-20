@@ -1,6 +1,29 @@
 import { useState, useEffect } from 'react';
 import '../../styles/Dashboard.css';
 
+const styles = {
+  badge: {
+    padding: '4px 12px',
+    borderRadius: '12px',
+    fontSize: '12px',
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    display: 'inline-block'
+  },
+  badgeApproved: {
+    backgroundColor: '#d4edda',
+    color: '#155724'
+  },
+  badgePending: {
+    backgroundColor: '#fff3cd',
+    color: '#856404'
+  },
+  badgeRejected: {
+    backgroundColor: '#f8d7da',
+    color: '#721c24'
+  }
+};
+
 export default function ManageStaff() {
   const [staff, setStaff] = useState([]);
   const [formData, setFormData] = useState({
@@ -20,11 +43,23 @@ export default function ManageStaff() {
   const fetchStaff = async () => {
     setLoading(true);
     try {
-      // Fetch users from backend - need to create this endpoint or use the existing users.json
-      // For now, we'll show that admin can create users
-      setStaff([]);
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5000/api/users', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setStaff(data.users || []);
+      } else {
+        console.error('Failed to fetch users');
+        setStaff([]);
+      }
     } catch (error) {
       console.error('Error fetching staff:', error);
+      setStaff([]);
     } finally {
       setLoading(false);
     }
@@ -92,15 +127,15 @@ export default function ManageStaff() {
   };
 
   const getStatusBadgeClass = (status) => {
-    return status === 'active' ? 'approved' : 'rejected';
+    return status === 'active' ? styles.badgeApproved : styles.badgeRejected;
   };
 
   const getRoleBadgeClass = (role) => {
     switch(role) {
-      case 'admin': return 'approved';
-      case 'manufacturer': return 'pending';
-      case 'retailer': return 'rejected';
-      default: return 'pending';
+      case 'admin': return styles.badgeApproved;
+      case 'manufacturer': return styles.badgePending;
+      case 'retailer': return styles.badgeRejected;
+      default: return styles.badgePending;
     }
   };
 
@@ -195,18 +230,108 @@ export default function ManageStaff() {
 
       <div className="card">
         <div className="card-header">
-          <h3 className="card-title">Existing Users</h3>
+          <h3 className="card-title">Existing Users ({roleStats.total})</h3>
         </div>
         <div className="card-body">
           {loading ? (
             <div style={{ textAlign: 'center', padding: '20px' }}>
               <div className="loading-spinner"></div>
             </div>
-          ) : (
-            <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>
-              <p>User list is managed in the backend database.</p>
-              <p>Contact your system administrator to view all users.</p>
+          ) : staff.length === 0 ? (
+            <div style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
+              <p>No users found. Create a new user account above.</p>
             </div>
+          ) : (
+            <>
+              {/* User Statistics */}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '15px',
+                marginBottom: '20px'
+              }}>
+                <div style={{
+                  padding: '15px',
+                  backgroundColor: '#e3f2fd',
+                  borderRadius: '8px',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#1976d2' }}>
+                    {roleStats.admin}
+                  </div>
+                  <div style={{ fontSize: '14px', color: '#666' }}>Admin</div>
+                </div>
+                <div style={{
+                  padding: '15px',
+                  backgroundColor: '#fff3e0',
+                  borderRadius: '8px',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#f57c00' }}>
+                    {roleStats.manufacturer}
+                  </div>
+                  <div style={{ fontSize: '14px', color: '#666' }}>Manufacturer</div>
+                </div>
+                <div style={{
+                  padding: '15px',
+                  backgroundColor: '#f3e5f5',
+                  borderRadius: '8px',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#7b1fa2' }}>
+                    {roleStats.retailer}
+                  </div>
+                  <div style={{ fontSize: '14px', color: '#666' }}>Retailer</div>
+                </div>
+              </div>
+
+              {/* Users Table */}
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr style={{ backgroundColor: '#f8f9fa', borderBottom: '2px solid #dee2e6' }}>
+                      <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600' }}>ID</th>
+                      <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600' }}>Username</th>
+                      <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600' }}>Role</th>
+                      <th style={{ padding: '12px', textAlign: 'left', fontWeight: '600' }}>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {staff.map((user) => (
+                      <tr key={user.id} style={{ borderBottom: '1px solid #dee2e6' }}>
+                        <td style={{ padding: '12px' }}>#{user.id}</td>
+                        <td style={{ padding: '12px', fontWeight: '500' }}>
+                          {user.username}
+                          {user.username === 'admin' && (
+                            <span style={{
+                              marginLeft: '8px',
+                              padding: '2px 8px',
+                              backgroundColor: '#ffd700',
+                              color: '#333',
+                              fontSize: '11px',
+                              borderRadius: '4px',
+                              fontWeight: 'bold'
+                            }}>
+                              SYSTEM
+                            </span>
+                          )}
+                        </td>
+                        <td style={{ padding: '12px' }}>
+                          <span style={{ ...styles.badge, ...getRoleBadgeClass(user.role) }}>
+                            {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                          </span>
+                        </td>
+                        <td style={{ padding: '12px' }}>
+                          <span style={{ ...styles.badge, ...getStatusBadgeClass('active') }}>
+                            Active
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
         </div>
       </div>

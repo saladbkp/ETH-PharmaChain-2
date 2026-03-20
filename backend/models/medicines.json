@@ -37,5 +37,18 @@
     "malNumber": null,
     "submittedAt": 1773914861420,
     "submittedBy": 2
+  },
+  {
+    "id": "4f3628fa-480a-4edf-9ee4-f44785099013",
+    "medicineName": "Paracetamol 100mg",
+    "category": "cat-otc-001",
+    "companyName": "PharmaCorp Inc.",
+    "registrationNumber": "REG-20260320-XYPQ0",
+    "contactEmail": "contact@pharmacorp.com",
+    "approvalDocument": "doc-1773989695376-y77nm.pdf",
+    "status": "approved",
+    "malNumber": "MAL202600002M",
+    "submittedAt": 1773989695382,
+    "submittedBy": 2
   }
 ]

@@ -184,7 +184,7 @@ export default function ScanQR() {
                     <td>{scanResult.batch || 'N/A'}</td>
                   </tr>
                   <tr>
-                    <td><strong>Quantity</strong></td>
+                    <td><strong>Quantity / units</strong></td>
                     <td>{scanResult.quantity || 'N/A'}</td>
                   </tr>
                   <tr>
