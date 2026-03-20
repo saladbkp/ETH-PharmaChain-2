@@ -225,6 +225,34 @@ router.get('/my-batches', authenticateToken, requireRole('manufacturer'), async 
 });
 
 /**
+ * GET /api/batches/approved
+ * Get all approved batches (admin only - for QR generation)
+ */
+router.get('/approved', authenticateToken, requireRole('admin'), async (req, res) => {
+  try {
+    const batches = getAllBatches();
+    const approvedBatches = batches.filter(b => b.status === 'approved');
+
+    // Enrich with medicine information, category name, and inventory info
+    const enriched = approvedBatches.map(batch => {
+      const medicine = getMedicineById(batch.medicineId);
+      const category = medicine ? getCategoryById(medicine.category) : null;
+
+      return {
+        ...batch,
+        medicineName: medicine ? medicine.medicineName : 'Unknown',
+        categoryName: category ? category.name : 'Unknown',
+        malNumber: medicine ? medicine.malNumber : 'N/A'
+      };
+    });
+
+    res.json({ batches: enriched });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+/**
  * GET /api/batches/history
  * Get batch approval/reject history (admin only)
  * IMPORTANT: This route must be defined BEFORE /:id to avoid "history" being treated as an ID

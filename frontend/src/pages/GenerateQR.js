@@ -8,23 +8,36 @@ export default function GenerateQR() {
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const [userRole, setUserRole] = useState('');
 
   useEffect(() => {
-    fetchInventory();
+    const role = localStorage.getItem('role');
+    setUserRole(role);
+    fetchInventory(role);
   }, []);
 
-  const fetchInventory = async () => {
+  const fetchInventory = async (role) => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/inventory/my-inventory', {
+      let apiUrl;
+
+      // Admin gets all approved batches, others get their inventory
+      if (role === 'admin') {
+        apiUrl = 'http://localhost:5000/api/batches/approved';
+      } else {
+        apiUrl = 'http://localhost:5000/api/inventory/my-inventory';
+      }
+
+      const response = await fetch(apiUrl, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
       const data = await response.json();
       if (response.ok) {
-        setInventory(data.inventory);
+        // Admin response has { batches: [] }, others have { inventory: [] }
+        setInventory(role === 'admin' ? data.batches : data.inventory);
       }
     } catch (error) {
       console.error('Error fetching inventory:', error);
@@ -43,21 +56,8 @@ export default function GenerateQR() {
     setMessage({ type: '', text: '' });
 
     try {
-      const token = localStorage.getItem('token');
-
-      // First, get batch details
-      const batchResponse = await fetch(`http://localhost:5000/api/inventory/my-inventory`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!batchResponse.ok) {
-        throw new Error('Failed to fetch batch details');
-      }
-
-      const batchData = await batchResponse.json();
-      const batch = batchData.inventory.find(item => item.batchId === selectedBatch);
+      // Get the selected batch from inventory
+      const batch = inventory.find(item => item.batchId === selectedBatch);
 
       if (!batch) {
         throw new Error('Batch not found');
@@ -73,11 +73,11 @@ export default function GenerateQR() {
         manufactureDate: batch.manufactureDate,
         expiryDate: batch.expiryDate,
         verified: true,
-        generatedAt: Date.now()
+        generatedAt: Date.now(),
+        generatedBy: userRole
       };
 
       // Generate QR code using a simple QR code library or API
-      // For now, we'll use a simple QR code API
       const jsonString = JSON.stringify(qrData);
       const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(jsonString)}`;
 
@@ -120,7 +120,12 @@ export default function GenerateQR() {
 
   return (
     <div className="dashboard-content">
-      <h2>Generate QR Code</h2>
+      <h2>Generate QR Code {userRole === 'admin' ? '(Admin)' : ''}</h2>
+      {userRole === 'admin' && (
+        <div style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#e3f2fd', borderRadius: '5px', fontSize: '14px' }}>
+          👑 <strong>Admin Mode:</strong> You can generate QR codes for all approved batches in the system.
+        </div>
+      )}
 
       {message.text && (
         <div className={`alert alert-${message.type}`}>

@@ -244,8 +244,29 @@ router.get('/history', authenticateToken, requireRole('admin'), async (req, res)
 router.get('/my-submissions', authenticateToken, requireRole('manufacturer'), async (req, res) => {
   try {
     const submissions = getMedicinesBySubmitter(req.user.id);
-    res.json({ medicines: submissions });
+
+    // Get approval history to include rejection notes
+    const approvalHistory = getApprovalHistoryByType('medicine');
+
+    // Enrich with category names and rejection notes
+    const enriched = submissions.map(med => {
+      const category = getCategoryById(med.category);
+
+      // Find rejection notes from approval history
+      const rejectionRecord = approvalHistory.find(
+        record => record.entityId === med.id && record.action === 'rejected'
+      );
+
+      return {
+        ...med,
+        categoryName: category ? category.name : med.category,
+        rejectionNotes: rejectionRecord ? rejectionRecord.notes : null
+      };
+    });
+
+    res.json({ medicines: enriched });
   } catch (error) {
+    console.error('Error in my-submissions:', error);
     res.status(500).json({ message: error.message });
   }
 });

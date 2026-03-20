@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import ScanTransaction from "./pages/ScanTransaction";
 import DashboardLayout from "./components/DashboardLayout";
 import ManufacturerRegister from "./pages/manufacturer/RegisterMedicine";
+import ManufacturerMedicines from "./pages/manufacturer/MyMedicines";
 import ManufacturerBatches from "./pages/manufacturer/MyBatches";
 import ManufacturerCreateBatch from "./pages/manufacturer/CreateBatch";
 import AdminPendingMedicines from "./pages/admin/PendingMedicines";
@@ -30,6 +31,7 @@ function App() {
                     <Route path="/dashboard" element={<DashboardLayout />}>
                         {/* Manufacturer routes */}
                         <Route path="manufacturer/register" element={<ManufacturerRegister />} />
+                        <Route path="manufacturer/medicines" element={<ManufacturerMedicines />} />
                         <Route path="manufacturer/batches" element={<ManufacturerBatches />} />
                         <Route path="manufacturer/create-batch" element={<ManufacturerCreateBatch />} />
 

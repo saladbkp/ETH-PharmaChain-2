@@ -24,10 +24,28 @@ export default function DashboardLayout() {
     if (!isConnected) {
       connectWallet();
     }
-  }, [navigate, isConnected, connectWallet]);
+
+    // Redirect to role's default page if at /dashboard root
+    if (location.pathname === '/dashboard') {
+      switch(userRole) {
+        case 'admin':
+          navigate('/dashboard/admin/pending-medicines');
+          break;
+        case 'manufacturer':
+          navigate('/dashboard/manufacturer/register');
+          break;
+        case 'retailer':
+          navigate('/dashboard/inventory');
+          break;
+        default:
+          navigate('/login');
+      }
+    }
+  }, [navigate, isConnected, connectWallet, location.pathname]);
 
   const manufacturerLinks = [
     { path: '/dashboard/manufacturer/register', label: 'Register Medicine' },
+    { path: '/dashboard/manufacturer/medicines', label: 'My Medicines' },
     { path: '/dashboard/manufacturer/create-batch', label: 'Create Batch' },
     { path: '/dashboard/manufacturer/batches', label: 'My Batches' },
     { path: '/dashboard/inventory', label: 'Inventory' },
@@ -42,6 +60,7 @@ export default function DashboardLayout() {
     { path: '/dashboard/admin/batch-history', label: 'Batch History' },
     { path: '/dashboard/admin/categories', label: 'Manage Categories' },
     { path: '/dashboard/admin/staff', label: 'Manage Staff' },
+    { path: '/dashboard/generate-qr', label: 'Generate QR' },
   ];
 
   const retailerLinks = [

@@ -34,8 +34,21 @@ const Login = () => {
 
             setMessage("✅ Login successful!");
 
+            // Redirect to role's default page
             setTimeout(() => {
-                navigate("/dashboard");
+                switch(role) {
+                    case 'admin':
+                        navigate("/dashboard/admin/pending-medicines");
+                        break;
+                    case 'manufacturer':
+                        navigate("/dashboard/manufacturer/register");
+                        break;
+                    case 'retailer':
+                        navigate("/dashboard/inventory");
+                        break;
+                    default:
+                        navigate("/dashboard");
+                }
             }, 500);
 
         } catch (error) {
