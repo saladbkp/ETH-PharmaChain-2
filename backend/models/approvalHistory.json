@@ -52,5 +52,50 @@
     "approvedBy": 1,
     "notes": "Batch BATCH-20260320-NKIJF approved",
     "createdAt": 1773990519272
+  },
+  {
+    "id": "587b9cad-c6b6-4ef9-8b1d-5ced493b2a49",
+    "entityType": "batch",
+    "entityId": "81215f7f-5566-4c5f-b2be-8d9eabe12ce1",
+    "action": "rejected",
+    "approvedBy": 1,
+    "notes": "no quality",
+    "createdAt": 1773991026446
+  },
+  {
+    "id": "af3e1ddd-dfa0-4dd5-b894-7e98e140b1ea",
+    "entityType": "batch",
+    "entityId": "214b53ff-0859-4b1f-9d2b-43aa47cff428",
+    "action": "rejected",
+    "approvedBy": 1,
+    "notes": "no",
+    "createdAt": 1773991119070
+  },
+  {
+    "id": "8a740ed3-599b-41fc-bc55-39c703c24562",
+    "entityType": "batch",
+    "entityId": "daf0ce9e-4c7d-4c7f-8270-bd531ea1711e",
+    "action": "approved",
+    "approvedBy": 1,
+    "notes": "Batch BATCH-20260320-E4PUK approved",
+    "createdAt": 1773991486026
+  },
+  {
+    "id": "71f1d306-323c-4870-af96-d4eb0f27aa45",
+    "entityType": "batch",
+    "entityId": "441a6e9f-384a-40c5-9995-78a224ed9904",
+    "action": "rejected",
+    "approvedBy": 1,
+    "notes": "no",
+    "createdAt": 1773991491859
+  },
+  {
+    "id": "0965e1ae-6a87-4c07-ad71-0e7d25ac82d3",
+    "entityType": "batch",
+    "entityId": "deb15e42-e21d-4cc3-bd5e-1e93353238a1",
+    "action": "rejected",
+    "approvedBy": 1,
+    "notes": "no",
+    "createdAt": 1773992061184
   }
 ]

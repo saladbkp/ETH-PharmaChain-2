@@ -64,5 +64,38 @@
     "createdAt": 1773990608410,
     "txHash": null,
     "notes": "Transfer completed"
+  },
+  {
+    "id": "a7d730df-b2ac-43dc-b9f3-5dd76d887e05",
+    "batchId": "BATCH-20260320-NKIJF",
+    "fromUserId": 2,
+    "toUserId": "3",
+    "quantity": 400,
+    "transactionType": "transfer",
+    "createdAt": 1773991294834,
+    "txHash": null,
+    "notes": "Transfer completed"
+  },
+  {
+    "id": "12354b36-4f31-4dde-a546-3c9e6516fed8",
+    "batchId": "BATCH-20260320-NKIJF",
+    "fromUserId": 2,
+    "toUserId": "3",
+    "quantity": 400,
+    "transactionType": "transfer",
+    "createdAt": 1773991319917,
+    "txHash": null,
+    "notes": "Transfer completed"
+  },
+  {
+    "id": "a522e5f2-ec79-40f7-a31b-f22351e845c1",
+    "batchId": "BATCH-20260320-E4PUK",
+    "fromUserId": null,
+    "toUserId": 2,
+    "quantity": 200,
+    "transactionType": "stock_add",
+    "createdAt": 1773991486027,
+    "txHash": null,
+    "notes": null
   }
 ]

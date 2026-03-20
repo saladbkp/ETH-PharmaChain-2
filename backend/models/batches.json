@@ -20,7 +20,7 @@
     "quantity": 200,
     "manufactureDate": "2001-10-10T00:00:00.000Z",
     "expiryDate": "2026-10-10T00:00:00.000Z",
-    "status": "pending",
+    "status": "rejected",
     "manufacturerId": 2,
     "submittedAt": 1773914890392,
     "approvedAt": null
@@ -50,5 +50,57 @@
     "manufacturerId": 2,
     "submittedAt": 1773990492760,
     "approvedAt": 1773990513586
+  },
+  {
+    "id": "214b53ff-0859-4b1f-9d2b-43aa47cff428",
+    "medicineId": "4f3628fa-480a-4edf-9ee4-f44785099013",
+    "malNumber": "MAL202600002M",
+    "batchId": "BATCH-20260320-L7IU7",
+    "quantity": 1000,
+    "manufactureDate": "2003-01-01T00:00:00.000Z",
+    "expiryDate": "2005-02-10T00:00:00.000Z",
+    "status": "rejected",
+    "manufacturerId": 2,
+    "submittedAt": 1773991098270,
+    "approvedAt": null
+  },
+  {
+    "id": "daf0ce9e-4c7d-4c7f-8270-bd531ea1711e",
+    "medicineId": "4f3628fa-480a-4edf-9ee4-f44785099013",
+    "malNumber": "MAL202600002M",
+    "batchId": "BATCH-20260320-E4PUK",
+    "quantity": 200,
+    "manufactureDate": "2003-10-10T00:00:00.000Z",
+    "expiryDate": "2004-10-10T00:00:00.000Z",
+    "status": "approved",
+    "manufacturerId": 2,
+    "submittedAt": 1773991442134,
+    "approvedAt": 1773991486025
+  },
+  {
+    "id": "441a6e9f-384a-40c5-9995-78a224ed9904",
+    "medicineId": "4f3628fa-480a-4edf-9ee4-f44785099013",
+    "malNumber": "MAL202600002M",
+    "batchId": "BATCH-20260320-Y7YC1",
+    "quantity": 200,
+    "manufactureDate": "2005-10-10T00:00:00.000Z",
+    "expiryDate": "2028-02-10T00:00:00.000Z",
+    "status": "rejected",
+    "manufacturerId": 2,
+    "submittedAt": 1773991467949,
+    "approvedAt": null
+  },
+  {
+    "id": "deb15e42-e21d-4cc3-bd5e-1e93353238a1",
+    "medicineId": "4f3628fa-480a-4edf-9ee4-f44785099013",
+    "malNumber": "MAL202600002M",
+    "batchId": "BATCH-20260320-RIR4J",
+    "quantity": 100,
+    "manufactureDate": "2003-10-10T00:00:00.000Z",
+    "expiryDate": "2027-10-10T00:00:00.000Z",
+    "status": "rejected",
+    "manufacturerId": 2,
+    "submittedAt": 1773992042370,
+    "approvedAt": null
   }
 ]

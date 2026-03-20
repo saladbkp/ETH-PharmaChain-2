@@ -9,6 +9,7 @@ import ManufacturerBatches from "./pages/manufacturer/MyBatches";
 import ManufacturerCreateBatch from "./pages/manufacturer/CreateBatch";
 import AdminPendingMedicines from "./pages/admin/PendingMedicines";
 import AdminApprovalHistory from "./pages/admin/ApprovalHistory";
+import AdminBatchApprovalHistory from "./pages/admin/BatchApprovalHistory";
 import AdminManageCategories from "./pages/admin/ManageCategories";
 import AdminPendingBatches from "./pages/admin/PendingBatches";
 import AdminManageStaff from "./pages/admin/ManageStaff";
@@ -36,6 +37,7 @@ function App() {
                         <Route path="admin/pending-medicines" element={<AdminPendingMedicines />} />
                         <Route path="admin/pending-batches" element={<AdminPendingBatches />} />
                         <Route path="admin/history" element={<AdminApprovalHistory />} />
+                        <Route path="admin/batch-history" element={<AdminBatchApprovalHistory />} />
                         <Route path="admin/categories" element={<AdminManageCategories />} />
                         <Route path="admin/staff" element={<AdminManageStaff />} />
 

@@ -39,6 +39,7 @@ export default function DashboardLayout() {
     { path: '/dashboard/admin/pending-medicines', label: 'Pending Medicines' },
     { path: '/dashboard/admin/pending-batches', label: 'Pending Batches' },
     { path: '/dashboard/admin/history', label: 'Approval History' },
+    { path: '/dashboard/admin/batch-history', label: 'Batch History' },
     { path: '/dashboard/admin/categories', label: 'Manage Categories' },
     { path: '/dashboard/admin/staff', label: 'Manage Staff' },
   ];

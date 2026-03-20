@@ -5,7 +5,8 @@ const {
   getBatchById,
   getBatchesByStatus,
   getBatchesByManufacturer,
-  updateBatchStatus
+  updateBatchStatus,
+  getAllBatches
 } = require('../models/Batch');
 const { getMedicineById } = require('../models/Medicine');
 const { getCategoryById } = require('../models/Category');
@@ -218,6 +219,38 @@ router.get('/my-batches', authenticateToken, requireRole('manufacturer'), async 
     });
 
     res.json({ batches: enriched });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+/**
+ * GET /api/batches/history
+ * Get batch approval/reject history (admin only)
+ * IMPORTANT: This route must be defined BEFORE /:id to avoid "history" being treated as an ID
+ */
+router.get('/history', authenticateToken, requireRole('admin'), async (req, res) => {
+  try {
+    const { getApprovalHistoryByType } = require('../models/ApprovalHistory');
+    const history = getApprovalHistoryByType('batch');
+    const batches = getAllBatches();
+
+    const enriched = history.map(record => {
+      const batch = batches.find(b => b.id === record.entityId);
+      const medicine = batch ? getMedicineById(batch.medicineId) : null;
+      return {
+        ...record,
+        batchId: batch ? batch.batchId : 'Unknown',
+        medicineName: medicine ? medicine.medicineName : 'Unknown',
+        quantity: batch ? batch.quantity : 'N/A',
+        expiryDate: batch ? batch.expiryDate : 'N/A'
+      };
+    });
+
+    // Sort by date (newest first)
+    enriched.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    res.json({ history: enriched });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

@@ -89,6 +89,10 @@ function getBatchesByMedicine(medicineId) {
   return batches.filter(b => b.medicineId === medicineId);
 }
 
+function getAllBatches() {
+  return loadBatches();
+}
+
 module.exports = {
   loadBatches,
   saveBatches,
@@ -97,5 +101,6 @@ module.exports = {
   getBatchesByStatus,
   getBatchesByManufacturer,
   updateBatchStatus,
-  getBatchesByMedicine
+  getBatchesByMedicine,
+  getAllBatches
 };

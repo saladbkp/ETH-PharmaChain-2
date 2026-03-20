@@ -21,17 +21,17 @@
     "updatedAt": 1773990513587
   },
   {
-    "id": "6e2aee1b-0e54-4de4-8053-59b1779ee811",
-    "batchId": "BATCH-20260320-NKIJF",
-    "userId": 2,
-    "quantity": 800,
-    "updatedAt": 1773990608408
-  },
-  {
     "id": "41ef9287-8c86-41ec-b906-168a5deac2cc",
     "batchId": "BATCH-20260320-NKIJF",
     "userId": "3",
+    "quantity": 1000,
+    "updatedAt": 1773991319917
+  },
+  {
+    "id": "40947714-71d6-463d-b0cb-c4a18412a26d",
+    "batchId": "BATCH-20260320-E4PUK",
+    "userId": 2,
     "quantity": 200,
-    "updatedAt": 1773990608409
+    "updatedAt": 1773991486026
   }
 ]
